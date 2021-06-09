@@ -1,0 +1,35 @@
+Country,State,Taliban Control,ANA Control,ISIS Control,Contested,Longitude,Latitude,Total Districts
+Afghanistan,Badakhshan,2,3,0,19,70.6640625,36.6992554,24
+Afghanistan,Nimruz,0,1,0,4,62.568512,30.9799639,5
+Afghanistan,Helmand,6,0,0,7,64.3500137,31.5899416,13
+Afghanistan,Kandahar,2,1,0,7,65.541687,31.7550285,10
+Afghanistan,Farah,5,1,0,5,62.3391724,32.5491284,11
+Afghanistan,Herat,0,3,0,9,62.6660156,34.1118046,12
+Afghanistan,Badghis,3,0,0,4,63.8690186,34.5879975,7
+Afghanistan,Ghor,0,1,0,4,65.251912,34.520186,5
+Afghanistan,Daykondi,0,1,0,1,66.154266,33.712073,2
+Afghanistan,Uruzgan,2,0,0,4,66.7337036,33.8635738,6
+Afghanistan,Zabul,5,1,0,5,67.4382019,31.7269991,11
+Afghanistan,Paktika,6,3,0,9,68.4499741,32.8599788,18
+Afghanistan,Ghazni,10,0,0,6,68.1564331,33.7654487,16
+Afghanistan,Faryab,5,1,0,7,64.1903687,35.2186975,13
+Afghanistan,Khost,0,3,0,8,69.0325928,33.2432819,11
+Afghanistan,Paktia,3,2,0,5,69.1699219,33.8476076,10
+Afghanistan,Logar,2,1,0,3,69.2605591,34.1231739,6
+Afghanistan,Wardak,1,1,0,6,67.0770264,33.9160131,8
+Afghanistan,Bamiyan,0,1,0,0,67.5123596,34.8109845,1
+Afghanistan,Sar-e Pol,1,1,0,5,65.9179688,36.3151251,7
+Afghanistan,Jowzjan,3,2,0,5,66.1981201,36.9937784,10
+Afghanistan,Balkh,1,1,0,3,67.0166016,35.9513299,5
+Afghanistan,Samangan,1,2,0,1,66.9836426,36.5537752,4
+Afghanistan,Kunduz,3,0,0,4,67.0166016,35.9513299,7
+Afghanistan,Takhar,4,1,0,6,69.8318481,36.8730294,11
+Afghanistan,Baghlan,2,1,0,12,68.6219788,36.0801819,15
+Afghanistan,Parwan,0,1,0,4,69.316864,34.9287268,5
+Afghanistan,Kabul,0,1,0,0,69.9224854,34.4703351,1
+Afghanistan,Nagarhar,5,3,1,9,69.9526978,34.3865127,18
+Afghanistan,Kapisa,0,1,0,3,69.346132,35.014489,4
+Afghanistan,Laghman,0,1,0,3,70.20695,34.675428,4
+Afghanistan,Kunar,0,1,4,6,71.149505,34.875757,11
+Afghanistan,Nuristan,0,1,0,5,70.922265,35.420528,6
+Afghanistan,Panjshir,0,1,0,0,69.514347,35.313257,1
