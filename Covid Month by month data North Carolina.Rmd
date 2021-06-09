@@ -1,0 +1,64 @@
+---
+title: "covid mapping knit"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(gganimate)
+library(dplyr)
+library(tidyverse)
+library(gifski)
+library(leaflet)
+library(png)
+library(tigris)
+```
+#Bar Graph
+```{r}
+month=read.csv("covid month by month NC.csv", header=TRUE, sep=',', dec='.', stringsAsFactors=FALSE)
+#clean data of NAs column and make the data set into a data frame
+month<-month[,-3]
+month<-as.data.frame(month)
+#create bargraph by ggplot and change aestehtics(background color, axis title font size, bar color)
+p <- ggplot(month, aes(Month, Covid.Cases, fill = Covid.Cases)) +
+  geom_col() +  
+  scale_fill_distiller(palette = "Greens", direction = 1)  +
+  theme_minimal() +  
+  geom_text(aes(label = signif(Covid.Cases, digits = 3)), nudge_y = 8, color="red") +
+  theme(axis.text.x = element_text(size=6))+
+  theme(plot.background = element_rect(fill = "#BFD5E3"))
+  theme(panel.grid = element_blank(), panel.grid.major.y = element_line(color = "black"), panel.ontop = TRUE)
+#Show Graph
+p
+#Animate Bar Graph
+p + transition_states(Month, wrap = FALSE) +
+  shadow_mark() +
+  enter_grow() +
+  enter_fade()
+```
+#Static Plot
+```{r}
+#change the month column to numeric for static plot to work
+month$Month <- c("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+month$Month<-factor(month$Month)
+month$Month <- as.numeric(month$Month)
+#Create Static Plot p1
+p1 <- ggplot(month, aes(Month, Covid.Cases, group = 2, color = factor(Month))) +
+  geom_line() +
+  scale_color_viridis_d() +
+  labs(x = "Month", y = "Covid-19 Cases") +
+  theme(legend.position = "top")
+#Show Static Plot
+p1
+#Animate Static Plot!
+#plot goes from 1 to 12(January 2021, February 2021, March 2020,April 2020...December 2020)
+p1 + 
+geom_point() +
+transition_reveal(Month)
+```
