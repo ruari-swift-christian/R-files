@@ -1,0 +1,332 @@
+---
+title: "IAF Strikes Against Hamas and PIJ"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Load Libraries
+library(leaflet)
+library(shiny)
+library(dplyr)
+library(leaflet.extras)
+library(ggmap)
+library(ggplot2)
+library(htmlwidgets)
+library(htmltools)
+```
+
+```{r}
+#load icons 
+greenIcon <- awesomeIcons(
+  icon = "ioniocon",
+  library = "ion",
+  markerColor = "green",
+  iconColor = "white",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+orangeIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "orange",
+  iconColor = "white",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+redIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "red",
+  iconColor = "white",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+blackIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "black",
+  iconColor = "white",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+lightBlueIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "lightblue",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+lightGreenIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "lightgreen",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+blueIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "blue",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+grayIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "gray",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+beigeIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "beige",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+darkGreenIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "darkgreen",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+
+whiteIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "white",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+lightGrayIcon <- awesomeIcons(
+  icon = "ionicon",
+  library = "ion",
+  markerColor = "lightgray",
+  iconColor = "black",
+  spin = FALSE,
+  extraClasses = NULL,
+  squareMarker = FALSE,
+  iconRotate = 0,
+  fontFamily = "monospace",
+  text = NULL
+)
+
+```
+
+```{r}
+#load coordinates
+
+long1=c(34.4478035, 34.545393, 34.4617456, 34.4520789, 34.4930577,  34.4820821, 34.5389128, 
+        34.4062829,  34.4501209,  34.4966197, 34.4480181, 34.4367957,  34.4676626,
+        34.3113971, 34.294703, 34.2733097, 34.4443917, 34.453876,  34.5050526, 34.5106101,
+        34.4355297, 34.4346902, 34.3526387, 34.4627488, 34.2542768, 34.2712069, 34.3345821,
+        34.3498707, 34.283824, 34.3476391, 34.4032359, 34.4100058, 34.3533039, 34.490515, 
+        34.2679453, 34.3015051, 34.5039153)
+lat1=c(31.5400292, 31.5383101, 31.53954, 31.5422008, 31.557465, 31.52746, 31.5498401, 
+       31.43449, 31.5272634, 31.533075, 31.5192702, 31.5041416, 31.5587312, 31.3263573,
+       31.254235, 31.3295604, 31.523491, 31.5153191, 31.5407698, 31.5494915, 31.517377, 
+       31.5158701, 31.3381975, 31.4951767, 31.30149, 31.2857715, 31.3410382, 31.337776, 
+       31.3517129, 31.3692754, 31.4401563, 31.4344442, 31.4128469, 31.5454194, 31.3632933, 
+       31.3425684, 31.5671964)
+
+long2=c(34.3052495,34.4663215, 34.3006468, 34.4969845, 34.5044088, 34.5099235,
+        34.4343925, 34.4535327, 34.4798398, 34.4621265)
+lat2=c(31.3486893, 31.5104897, 31.351648, 31.5606373, 31.5699227, 31.5624931,
+       31.5191056, 31.5174364, 31.4915996, 31.5000732)
+
+long3=c(34.4492626, 34.3947387)
+lat3=c(31.5443084, 31.4136572)
+
+long4=c(34.4520789)
+lat4=c(31.5422054)
+
+long5=c(34.5121121)
+lat5=c(31.561908)  
+
+long6=c(34.5486116)
+lat6=c(31.542498)
+
+long7=c(34.4394135)
+lat7=c(31.5204409)
+
+long8=c(34.4464087, 34.4772863,  34.4772863, 34.537679, 34.3088222)
+lat8=c(31.50008, 31.4987261, 31.4987261, 31.5397366, 31.3410748)
+
+long9=c(34.4396496)
+lat9=c(31.5227822)
+
+long10=c(34.4023079)
+lat10=c(31.4371561)
+
+long11=34.5135069
+lat11=31.5452594
+
+long12= c(34.4405428, 34.4475782)
+lat12=c(31.493682, 31.5353245)
+
+long13= 34.4059503
+lat13=31.431643
+
+long14=c(34.4434261, 34.4301867)
+lat14=c(31.5193982, 31.5070595)
+
+long15 = c(34.3040907, 34.4468164)
+lat15 = c(31.3428823, 31.5208616)
+
+long16=34.3070841
+lat16=31.3460321
+
+long17=c(34.4993234, 34.5032716,  34.4501102,  34.4473046, 34.4063097, 34.4032654,
+         34.4706345, 34.4567513, 34.449241, 34.4512367,  34.4530821, 34.2597699,
+         34.4432116, 34.4599271, 34.3510401, 34.4461083, 34.4427717, 34.4513333, 
+         34.45158, 34.4708383, 34.4618261, 34.3251193, 34.462148, 34.2474049, 
+         34.3438625, 34.2622966, 34.2952824, 34.4750118, 34.2658103, 34.3014622, 
+         34.4472134)
+lat17=c(31.5421186, 31.5435678, 31.5289507, 31.5360046, 31.4367899, 31.4375303,
+        31.5008759, 31.5181818, 31.5231206, 31.5143404, 31.5169105, 31.2830988,
+        31.4782873, 31.4996684, 31.415026, 31.5224666, 31.5236419, 31.5132885, 
+        31.5128358, 31.4999817, 31.5388976, 31.3410794, 31.5001852, 31.2968215, 
+        31.4257152, 31.2697535, 31.3536095, 31.4860599, 31.2627804, 31.3430724, 
+        31.5348399)
+
+long18=c(34.4817495, 34.475677, 34.4784451, 34.2667007)
+lat18=c(31.487263, 31.4965992, 31.4946323, 31.2500525)
+
+long19=c(34.4343925)
+lat19=c(31.5191056)
+
+long20=c(34.2598557)
+lat20=c(31.2702751)
+
+long21=c( 34.4845712)
+lat21=c(31.5513898)
+```
+
+```{r}
+#put a title on the top right
+tag.map.title <- tags$style(HTML("
+  .leaflet-control.map-title { 
+    transform: translate(-50%,20%);
+    position: fixed !important;
+    left: 50%;
+    text-align: center;
+    padding-left: 10px; 
+    padding-right: 10px; 
+    background: rgba(255,255,255,0.75);
+    font-weight: bold;
+    font-size: 36px;
+  }
+"))
+title <- tags$div(
+  tag.map.title, HTML("PIJ/Hamas Sites/Government Targetted by IAF")
+)  
+tags$style(type = "text/css", 'label[for="range"] {color: white;}')
+
+```
+
+```{r}
+#Add popup note of IAF aftermath
+note_1<- paste(sep = "<br/>",
+               " Aftermath of IAF Airstrikes in Gaza:</a></b>",
+               "62 miles of tunnels destroyed. 30 Hamas Senior commanders were killed. <br/>",
+               "Civilian and infrastructure casualties: 260 Palestinians killed including 65 children. 1,000 buildings destroyed. 17 damaged hospitals"
+)
+```
+
+```{r}
+#load Satellite Map of Gaza
+map <- leaflet() %>%
+  addProviderTiles('Esri.WorldImagery') %>% 
+  addProviderTiles("CartoDB.PositronOnlyLabels") %>%
+  addControl(title, position = "topright", className="PIJ/Hamas/Government Sites Targetted by IAF") %>%
+  addAwesomeMarkers(lng=long1, lat=lat1, label = "Hamas Militant Compound/Site", icon = greenIcon) %>%
+  addAwesomeMarkers(lng=long2, lat=lat2, label = "Hamas rocket/mortar launch site", icon = orangeIcon) %>%
+  addAwesomeMarkers(lng=long3, lat=lat3, label = "Palestine Jihad Movement Compound/Site", icon = redIcon) %>%
+  addAwesomeMarkers(lng=long4, lat=lat4, label = "Hamas Military Outpost", icon = blackIcon) %>%
+  addAwesomeMarkers(lng=long5, lat=lat5, label = "Hamas AA Site", icon = lightBlueIcon) %>%
+  addAwesomeMarkers(lng=long6, lat=lat6, label = "Hamas Terror Cell", icon = lightGreenIcon) %>% 
+  addAwesomeMarkers(lng=long7, lat=lat7, label = "Palestine Police Central Operation", icon = blueIcon) %>%
+  addAwesomeMarkers(lng=long8, lat=lat8, label = "Hamas Leaders/MilitaryCommanders/Political Officers assasination", icon =grayIcon) %>%
+  addAwesomeMarkers(lng=long9, lat=lat9, label = "Ministry of Finance", icon = beigeIcon) %>%
+  addAwesomeMarkers(lng=long10, lat=lat10, label = "Islamic National Bank", icon = beigeIcon) %>%
+  addAwesomeMarkers(lng=long11, lat=lat11, label = "Hamas Internal Security HQ", icon = blueIcon) %>% 
+  addAwesomeMarkers(lng=long12, lat=lat12, label = "Police Station", icon = blueIcon) %>% 
+  addAwesomeMarkers(lng=long13, lat=lat13, label = "Central Governorate of Palestine", icon = beigeIcon) %>% 
+  addAwesomeMarkers(lng=long14, lat=lat14, label = "Internal Security Agency Gaza Governorate", icon = blueIcon) %>% 
+  addAwesomeMarkers(lng=long15, lat=lat15, label = "Hamas Intelligence Building and Hamas Cyber Units", icon =blueIcon) %>% 
+  addAwesomeMarkers(lng=long16, lat=lat16, label = "Headquaters of the National Bank", icon = blueIcon) %>% 
+  addAwesomeMarkers(lng=long17, lat=lat17, label = "Hamas Militant House/Apartment", icon = grayIcon) %>% 
+  addAwesomeMarkers(lng=long18, lat=lat18, label = "PIJ/Hamas Anti-Tank Squad/ ATGM Cell", icon = darkGreenIcon) %>%
+  addAwesomeMarkers(lng=long19, lat=lat19, label = "Palestine Government Compound", icon = beigeIcon) %>%
+  addAwesomeMarkers(lng=long20, lat=lat20, label = "Hamas Tunnel Site/Entrance", icon = whiteIcon) %>%
+  addAwesomeMarkers(lng=long21, lat=lat21, label = "Hamas Warehouse", icon = lightGrayIcon) %>% 
+  addPopups(lng=34.3384552, lat=31.3244602, note_1, popupOptions(closeButton = FALSE))
+
+map
+```
+
+

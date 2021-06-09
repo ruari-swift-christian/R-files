@@ -1,0 +1,60 @@
+---
+title: "US Natural Gas Prices over Time"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load necessary Libraries
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(fanplot)
+library(zoo)
+library(tsbugs)
+library(forecast)
+library(fGarch)
+library(reshape2)
+library(prophet)
+library(dygraphs)
+library(xts)
+
+# Load Data of US Natural Gas Prices 1997-2020 CSV file
+df_gas <- read.csv('daily_natural_gas.csv', header=TRUE, stringsAsFactors =  FALSE)
+#Clean Data andcorrect data type 'Date' from character to Date
+df_gas$Date <- as.Date(df_gas$Date, format =  "%Y-%m-%d")
+```
+#Prophet Forecast Map
+```{r}
+df_gas <- mutate (
+  df_gas,
+  ds = Date,  # Create new ds column from date using mutate
+  y = Price   # Create new y column from value using mutate
+)
+m <- prophet(df_gas)
+future <- make_future_dataframe(m, periods = 365)
+head(future)
+#Create a prophet forecast map to predict 2021 natural gas prices
+forecast <- predict(m, future)
+plot(m, forecast)
+#Make a graph with dashed lines showing change in trends in US Natural Gas Prices
+prophet_plot_components(m, forecast)
+```
+#Time Series Dygraph package
+```{r}
+natural_gas_prices <- cbind(df_gas$Price)
+#Set df_gas dta set to xts to work for dygraphs package
+df_gas_timeSeries <- xts(x = df_gas$Price,
+                            order.by = df_gas$Date)
+#make a interactive Time Series Plot with a Date Range Slider at the bottom with added Y label and Main Title : Y="Natural Gas Price; Main Title = US Natural Gas Prices 1997-2020
+interact_time2 <- dygraph(df_gas_timeSeries, main = "US Natural Gas Prices 1997-2020", 
+                          ylab = "Natural Gas Price") %>% 
+        dyRangeSelector()
+interact_time2
+
+```

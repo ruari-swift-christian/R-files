@@ -1,0 +1,94 @@
+---
+title: "Choropleth map of vaccinated per 100,000 residents each state"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load plotly package
+library(plotly)
+#clean the data getting rid of NA's and making non ID columns numerical type
+map=read.csv("covid_project1.csv", header=TRUE, sep=',', dec='.', stringsAsFactors=FALSE)
+map
+map<-map[-26] ; map<- map[-25]
+map$Total.Covid.19.Deaths <- as.numeric(gsub(",","",map$Total.Covid.19.Deaths))
+map$Total.Covid.19.Cases <- as.numeric(gsub(",","",map$Total.Covid.19.Cases))
+map$weekly.average.cases <- as.numeric(gsub(",","",map$weekly.average.cases))
+map$vaccines.distributed <- as.numeric(gsub(",","",map$vaccines.distributed))
+map$Total.Population <- as.numeric(gsub(",","",map$Total.Population))
+map$vaccinated <- as.numeric(gsub(",","",map$vaccinated))
+map$Covid.Cases.65. <- as.numeric(gsub(",","",map$Covid.Cases.65.))
+map$Covid.Cases.under.65 <- as.numeric(gsub(",","",map$Covid.Cases.under.65))
+map$recovered <- as.numeric(gsub(",","",map$recovered))
+map$total.number.of.tests <- as.numeric(gsub(",","",map$total.number.of.tests))
+map$PCR. <- as.numeric(gsub(",","",map$PCR.))
+map$PCR..1 <- as.numeric(gsub(",","",map$PCR.))
+map$antigen. <- as.numeric(gsub(",","",map$antigen.))
+map$antigen..1 <- as.numeric(gsub(",","",map$antigen..1))
+map$Total.. <- as.numeric(gsub(",","",map$Total..))
+map$Total...1 <- as.numeric(gsub(",","",map$Total...1))
+map$VaccinatedPerCapita <- as.numeric(gsub(",","",map$Total...1))
+#change column values of map$State column to state codes instead of state names
+map$State<-c("AL","AL","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL",
+  "IN", "IA", "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE",
+  "NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD",
+  "TN","TX","UT","VT","VA","WA","WV","WI","WY")
+
+```
+
+```{r}
+#make a new column chowing vaccinated per capita of 100,000 residents in each US State
+map$VaccinatedPerCapita <- round(map$vaccinated/map$Total.Population*100000,2)
+#run plotly plot_geo and fig functions
+#show labels when hoveringo n each US state
+map$hover <- with(map, paste(State, '<br>', "Vaccinated per 100,000 residents"))
+#customize map borders
+l <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+#configure plotyl to create a US geographic map for vaccinated per capita
+fig <- plot_geo(map, locationmode = 'USA-states')
+fig <- fig %>% add_trace(
+  z = ~VaccinatedPerCapita, text = ~hover, locations = map$State,
+  color = ~VaccinatedPerCapita, colors = 'Blues'
+  )
+#Show title
+fig <- fig %>% colorbar(title = "people vaccinated per 100,000 citizens")
+fig <- fig %>% layout(title = 'people vaccinated per 100,000 residents each US State<br>(Hover for breakdown)', geo = g)
+#Show plotly US map
+fig
+```
+
+```{r}
+#run the previous process but for total covid cases per 100,000 residents
+map$CovidPerCapita <- round(map$Total.Covid.19.Cases/map$Total.Population*100000,2)
+map$hover2 <- with(map, paste(State, '<br>', "Covid-19 Cases per 100,000 residents"))
+#customize map borders
+l <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+fig2 <- plot_geo(map, locationmode = 'USA-states')
+fig2 <- fig2 %>% add_trace(
+  z = ~CovidPerCapita, text = ~hover2, locations = map$State,
+  color = ~CovidPerCapita, colors = 'Oranges'
+  )
+#Show title
+fig2 <- fig2 %>% colorbar(title = "covid-19 cases per 100,000 citizens")
+fig2 <- fig2 %>% layout(title = 'Covid-19 cases per 100,000 residents each US State<br>(Hover for breakdown)', geo = g)
+#Show plotly US map
+fig2
+```
+
