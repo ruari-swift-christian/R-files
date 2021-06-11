@@ -226,7 +226,7 @@ runs.expectancy(d2013)
 
 install.packages("kableExtra")
 
-re24_matrix <- 2020ARI.EVN %>% 
+re24_matrix <- 2020 %>% 
   mutate_at(vars(on_1b:on_3b), ~ifelse(is.na(.), 0, 1)) %>% 
   group_by(game_pk, inning, inning_topbot) %>% 
   mutate(score_end_inning = max(bat_score)) %>% 
